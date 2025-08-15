@@ -1,0 +1,24 @@
+name = "tiktok-downloader"
+main = "src/worker.js"
+compatibility_date = "2024-01-15"
+compatibility_flags = ["nodejs_compat"]
+
+[env.production]
+name = "tiktok-downloader"
+
+[env.staging]
+name = "tiktok-downloader-staging"
+
+# Optional: Add custom domains
+# [[env.production.routes]]
+# pattern = "tiktok-dl.yourdomain.com/*"
+# zone_name = "yourdomain.com"
+
+# Optional: Environment variables
+# [env.production.vars]
+# ENVIRONMENT = "production"
+
+# Optional: KV namespaces for caching
+# [[env.production.kv_namespaces]]
+# binding = "CACHE"
+# id = "your-kv-namespace-id"

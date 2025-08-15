@@ -1,0 +1,23 @@
+{
+  "name": "tiktok-downloader-workers",
+  "version": "1.0.0",
+  "description": "TikTok Downloader API for Cloudflare Workers with custom audio player",
+  "main": "src/worker.js",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "deploy:staging": "wrangler deploy --env staging",
+    "deploy:production": "wrangler deploy --env production",
+    "tail": "wrangler tail",
+    "test": "wrangler dev --local"
+  },
+  "keywords": ["tiktok", "downloader", "cloudflare-workers", "api", "video-downloader"],
+  "author": "@Al_Azet",
+  "license": "MIT",
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
