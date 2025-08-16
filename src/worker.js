@@ -73,11 +73,11 @@ async function tiktokDl(url) {
       size_nowm_hd: res.hd_size,
       data: mediaData,
       music_info: {
-        id: res.music_info ? res.music_info.id : null,
-        title: res.music_info ? res.music_info.title : null,
-        author: res.music_info ? res.music_info.author : null,
-        album: res.music_info ? res.music_info.album : null,
-        url: res.music || (res.music_info ? res.music_info.play : null),
+        id: res.music_info?.id,
+        title: res.music_info?.title,
+        author: res.music_info?.author,
+        album: res.music_info?.album || null,
+        url: res.music || res.music_info?.play,
       },
       stats: {
         views: formatNumber(res.play_count || 0),
@@ -87,10 +87,10 @@ async function tiktokDl(url) {
         download: formatNumber(res.download_count || 0),
       },
       author: {
-        id: res.author ? res.author.id : null,
-        fullname: res.author ? res.author.unique_id : null,
-        nickname: res.author ? res.author.nickname : null,
-        avatar: res.author ? res.author.avatar : null,
+        id: res.author?.id,
+        fullname: res.author?.unique_id,
+        nickname: res.author?.nickname,
+        avatar: res.author?.avatar,
       },
     }
   } catch (error) {
@@ -198,48 +198,52 @@ const HTML_TEMPLATE = `
         }
 
         .title {
-            font-size: 3rem;
+            font-size: 3.5rem;
             font-weight: bold;
             background: linear-gradient(45deg, #ff0040, #00eaff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             margin-bottom: 10px;
-            text-shadow: 0 0 30px rgba(255, 0, 64, 0.3);
+            text-shadow: 0 0 30px rgba(255, 0, 64, 0.5);
         }
 
         .subtitle {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             color: #cccccc;
-            margin-bottom: 20px;
+            opacity: 0.8;
         }
 
         /* Input section */
         .input-section {
             width: 100%;
-            max-width: 800px;
+            max-width: 700px;
             margin-bottom: 40px;
         }
 
         .input-container {
+            position: relative;
             display: flex;
-            gap: 15px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 8px;
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(255, 255, 255, 0.1);
+            gap: 20px;
+            margin-bottom: 20px;
         }
 
         .url-input {
             flex: 1;
-            background: transparent;
-            border: none;
-            padding: 15px 20px;
-            color: #ffffff;
-            font-size: 1rem;
-            outline: none;
+            padding: 20px 30px;
+            background: rgba(20, 20, 20, 0.8);
+            border: 2px solid rgba(255, 0, 64, 0.3);
             border-radius: 15px;
+            color: #ffffff;
+            font-size: 18px;
+            outline: none;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .url-input:focus {
+            border-color: #ff0040;
+            box-shadow: 0 0 20px rgba(255, 0, 64, 0.3);
         }
 
         .url-input::placeholder {
@@ -247,42 +251,47 @@ const HTML_TEMPLATE = `
         }
 
         .download-btn {
+            padding: 20px 40px;
             background: linear-gradient(45deg, #ff0040, #ff4070);
             border: none;
-            padding: 15px 30px;
             border-radius: 15px;
-            color: white;
+            color: #ffffff;
+            font-size: 18px;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-size: 1rem;
+            opacity: 0.5;
+            pointer-events: none;
         }
 
-        .download-btn:hover {
+        .download-btn.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .download-btn.active:hover {
             background: linear-gradient(45deg, #ff4070, #ff0040);
+            box-shadow: 0 0 25px rgba(255, 0, 64, 0.5);
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(255, 0, 64, 0.3);
         }
 
         .download-btn:disabled {
-            background: #666666;
+            opacity: 0.5;
             cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
         }
 
-        /* Loading animation */
+        /* Loading spinner */
         .loading {
             display: none;
             text-align: center;
-            margin: 40px 0;
+            margin: 30px 0;
         }
 
         .spinner {
             width: 50px;
             height: 50px;
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            border-left: 4px solid #ff0040;
+            border: 4px solid rgba(255, 0, 64, 0.3);
+            border-top: 4px solid #ff0040;
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin: 0 auto 20px;
@@ -300,51 +309,46 @@ const HTML_TEMPLATE = `
             display: none;
         }
 
-        /* Enhanced result info to match TikTok design with better styling */
+        /* Updated result info to match TikTok author design */
         .result-info {
-            background: linear-gradient(135deg, rgba(30, 30, 30, 0.95), rgba(20, 20, 20, 0.95));
-            border: 2px solid rgba(255, 255, 255, 0.15);
-            border-radius: 24px;
-            padding: 30px;
+            background: rgba(20, 20, 20, 0.9);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 25px;
             margin-bottom: 30px;
-            backdrop-filter: blur(20px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(15px);
         }
 
         .post-title {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: bold;
             color: #ffffff;
             margin-bottom: 15px;
             line-height: 1.4;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
         }
 
         .post-meta {
-            color: #aaaaaa;
-            font-size: 0.95rem;
-            margin-bottom: 25px;
-            font-weight: 500;
+            color: #888888;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
         }
 
         .author-section {
             display: flex;
             align-items: center;
-            gap: 18px;
-            background: linear-gradient(135deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.2));
-            border-radius: 18px;
-            padding: 20px;
-            margin-bottom: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            gap: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 20px;
         }
 
         .author-avatar {
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             object-fit: cover;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.2);
         }
 
         .author-info {
@@ -352,121 +356,93 @@ const HTML_TEMPLATE = `
         }
 
         .author-name {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: bold;
             color: #ffffff;
-            margin-bottom: 5px;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+            margin-bottom: 3px;
         }
 
         .author-username {
-            font-size: 1rem;
-            color: #aaaaaa;
-            font-weight: 500;
+            font-size: 0.9rem;
+            color: #888888;
         }
 
-        /* Enhanced stats grid with better icons and styling */
+        /* Updated stats to 2x2 grid with icons like TikTok design */
         .result-stats {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 18px;
+            gap: 15px;
         }
 
         .stat-item {
             display: flex;
             align-items: center;
-            gap: 15px;
-            padding: 18px;
-            background: linear-gradient(135deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.2));
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
-        }
-
-        .stat-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            gap: 12px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
         }
 
         .stat-icon {
-            width: 32px;
-            height: 32px;
+            width: 24px;
+            height: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
+            font-size: 18px;
         }
 
-        .stat-icon.views { 
-            background: linear-gradient(45deg, #00aaff, #0088cc);
-            color: white;
-        }
-        .stat-icon.likes { 
-            background: linear-gradient(45deg, #ff3040, #cc2030);
-            color: white;
-        }
-        .stat-icon.comments { 
-            background: linear-gradient(45deg, #00ff88, #00cc66);
-            color: white;
-        }
-        .stat-icon.shares { 
-            background: linear-gradient(45deg, #aa44ff, #8833cc);
-            color: white;
-        }
+        .stat-icon.views { color: #00aaff; }
+        .stat-icon.likes { color: #ff3040; }
+        .stat-icon.comments { color: #00ff88; }
+        .stat-icon.shares { color: #aa44ff; }
 
         .stat-content {
             flex: 1;
         }
 
         .stat-label {
-            font-size: 0.9rem;
-            color: #aaaaaa;
-            margin-bottom: 4px;
-            font-weight: 500;
+            font-size: 0.85rem;
+            color: #888888;
+            margin-bottom: 2px;
         }
 
         .stat-value {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: bold;
             color: #ffffff;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
         }
 
-        /* Enhanced audio player to match reference design with better styling */
+        /* Updated audio player to match reference design */
         .audio-section {
-            background: linear-gradient(135deg, rgba(30, 30, 30, 0.95), rgba(20, 20, 20, 0.95));
-            border: 2px solid rgba(255, 255, 255, 0.15);
-            border-radius: 24px;
-            padding: 25px;
+            background: rgba(20, 20, 20, 0.9);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 20px;
             margin-bottom: 30px;
-            backdrop-filter: blur(20px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(15px);
         }
 
         .audio-player-card {
             display: flex;
             align-items: center;
-            gap: 25px;
-            background: linear-gradient(135deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.3));
-            border-radius: 20px;
-            padding: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            gap: 20px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 15px;
+            padding: 20px;
         }
 
         .music-icon {
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             background: linear-gradient(45deg, #ff0040, #ff4070);
-            border-radius: 16px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
+            font-size: 24px;
             color: white;
             flex-shrink: 0;
-            box-shadow: 0 6px 20px rgba(255, 0, 64, 0.3);
         }
 
         .audio-info {
@@ -475,57 +451,53 @@ const HTML_TEMPLATE = `
         }
 
         .audio-title-text {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: bold;
             color: #ffffff;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
         }
 
         .audio-author-text {
-            font-size: 1.1rem;
-            color: #aaaaaa;
+            font-size: 1rem;
+            color: #888888;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            font-weight: 500;
         }
 
         .audio-controls {
             display: flex;
-            gap: 18px;
+            gap: 15px;
             flex-shrink: 0;
         }
 
         .play-btn {
-            width: 60px;
-            height: 60px;
-            border-radius: 16px;
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
             border: none;
-            background: linear-gradient(45deg, rgba(120, 60, 90, 0.9), rgba(100, 50, 80, 0.9));
+            background: rgba(100, 50, 80, 0.8);
             color: white;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
-            font-size: 20px;
-            box-shadow: 0 4px 16px rgba(120, 60, 90, 0.3);
+            font-size: 18px;
         }
 
         .play-btn:hover {
-            background: linear-gradient(45deg, rgba(140, 70, 100, 1), rgba(120, 60, 90, 1));
+            background: rgba(120, 60, 90, 1);
             transform: scale(1.05);
-            box-shadow: 0 6px 20px rgba(120, 60, 90, 0.5);
         }
 
         .download-audio-btn {
-            width: 60px;
-            height: 60px;
-            border-radius: 16px;
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
             border: none;
             background: linear-gradient(45deg, #ff0040, #ff4070);
             color: white;
@@ -534,14 +506,12 @@ const HTML_TEMPLATE = `
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
-            font-size: 20px;
-            box-shadow: 0 4px 16px rgba(255, 0, 64, 0.3);
+            font-size: 18px;
         }
 
         .download-audio-btn:hover {
             background: linear-gradient(45deg, #ff4070, #ff0040);
             transform: scale(1.05);
-            box-shadow: 0 6px 20px rgba(255, 0, 64, 0.5);
         }
 
         /* Fixed photo grid to exactly 2 columns as requested */
@@ -552,30 +522,16 @@ const HTML_TEMPLATE = `
         .photo-header {
             display: flex;
             align-items: center;
-            gap: 15px;
-            margin-bottom: 25px;
-            padding: 20px;
-            background: linear-gradient(135deg, rgba(30, 30, 30, 0.95), rgba(20, 20, 20, 0.95));
-            border-radius: 20px;
-            border: 2px solid rgba(255, 255, 255, 0.15);
-        }
-
-        .photo-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(45deg, #00ff88, #00cc66);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            color: white;
-        }
-
-        .photo-title {
+            gap: 12px;
+            margin-bottom: 20px;
             font-size: 1.4rem;
             font-weight: bold;
             color: #ffffff;
+        }
+
+        .photo-header .icon {
+            color: #00ff88;
+            font-size: 20px;
         }
 
         .photo-grid {
@@ -585,180 +541,137 @@ const HTML_TEMPLATE = `
         }
 
         .photo-item {
-            position: relative;
-            aspect-ratio: 1;
-            border-radius: 20px;
-            overflow: hidden;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(20, 20, 20, 0.8);
             border: 2px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .photo-item:hover {
-            transform: scale(1.02);
-            border-color: #ff0040;
-            box-shadow: 0 10px 30px rgba(255, 0, 64, 0.3);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 234, 255, 0.2);
         }
 
         .photo-item img {
             width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .photo-download {
-            position: absolute;
-            bottom: 15px;
-            right: 15px;
-            width: 45px;
-            height: 45px;
-            background: linear-gradient(45deg, #ff0040, #ff4070);
-            border: none;
+            height: auto;
             border-radius: 12px;
-            color: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: all 0.3s ease;
-            font-size: 18px;
+            margin-bottom: 15px;
+            object-fit: cover;
+            aspect-ratio: 9/16;
+            max-height: 300px;
         }
 
-        .photo-item:hover .photo-download {
-            opacity: 1;
-        }
-
-        .photo-download:hover {
-            transform: scale(1.1);
-        }
-
-        /* Video section */
-        .video-section {
+        /* Video grid */
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
             margin-bottom: 40px;
         }
 
-        .video-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 25px;
-            padding: 20px;
-            background: linear-gradient(135deg, rgba(30, 30, 30, 0.95), rgba(20, 20, 20, 0.95));
-            border-radius: 20px;
-            border: 2px solid rgba(255, 255, 255, 0.15);
-        }
-
-        .video-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(45deg, #ff0040, #ff4070);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            color: white;
-        }
-
-        .video-title {
-            font-size: 1.4rem;
-            font-weight: bold;
-            color: #ffffff;
-        }
-
-        .video-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-        }
-
         .video-item {
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 20px;
-            transition: all 0.3s ease;
+            background: rgba(20, 20, 20, 0.8);
+            border: 2px solid rgba(0, 234, 255, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .video-item:hover {
-            border-color: #ff0040;
-            box-shadow: 0 10px 30px rgba(255, 0, 64, 0.2);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 234, 255, 0.2);
         }
 
-        .video-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .video-quality {
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: #ffffff;
-        }
-
-        .video-size {
-            font-size: 0.9rem;
-            color: #888888;
-        }
-
-        .video-download {
+        .video-item video {
             width: 100%;
-            padding: 15px;
-            background: linear-gradient(45deg, #ff0040, #ff4070);
-            border: none;
-            border-radius: 15px;
-            color: white;
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            background: #000;
+            max-height: 500px;
+        }
+
+        .video-quality-label {
+            margin-bottom: 20px;
+            color: #00eaff;
             font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* Download buttons */
+        .download-media-btn {
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #00eaff, #0099cc);
+            border: none;
+            border-radius: 12px;
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 16px;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-size: 1rem;
+            text-decoration: none;
+            display: inline-block;
+            width: 100%;
+            max-width: 250px;
         }
 
-        .video-download:hover {
-            background: linear-gradient(45deg, #ff4070, #ff0040);
+        .download-media-btn:hover {
+            background: linear-gradient(45deg, #0099cc, #00eaff);
+            box-shadow: 0 0 25px rgba(0, 234, 255, 0.4);
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(255, 0, 64, 0.3);
         }
 
         /* API Documentation */
         .api-docs {
             width: 100%;
-            max-width: 1000px;
-            margin: 60px auto 40px;
+            max-width: 1200px;
+            background: rgba(20, 20, 20, 0.8);
+            border: 2px solid rgba(255, 0, 64, 0.3);
+            border-radius: 15px;
             padding: 30px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 20px;
-            border: 2px solid rgba(255, 255, 255, 0.1);
+            margin-top: 40px;
+            backdrop-filter: blur(10px);
         }
 
         .api-title {
-            font-size: 1.5rem;
-            margin-bottom: 20px;
-            color: #ffffff;
-            text-align: center;
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: #ff0040;
+            margin-bottom: 25px;
         }
 
         .api-example {
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
             padding: 20px;
-            border-radius: 15px;
             margin: 15px 0;
             font-family: 'Courier New', monospace;
-            font-size: 0.9rem;
-            color: #cccccc;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 15px;
+            color: #00eaff;
             overflow-x: auto;
+            line-height: 1.5;
         }
 
         /* Footer */
         .footer {
-            text-align: center;
-            padding: 30px;
-            color: #888888;
-            font-size: 0.9rem;
+            position: fixed;
+            bottom: 15px;
+            right: 15px;
+            font-size: 16px;
+            color: white;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 10px 18px;
+            border-radius: 12px;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
         }
 
         .footer a {
@@ -768,78 +681,122 @@ const HTML_TEMPLATE = `
         }
 
         .footer a:hover {
-            color: #ff4070;
+            color: #00eaff;
         }
 
-        /* Responsive design */
+        /* Enhanced responsive design for all devices */
         @media (max-width: 768px) {
             .title {
-                font-size: 2.2rem;
+                font-size: 2.5rem;
             }
-
+            
             .subtitle {
-                font-size: 1rem;
+                font-size: 1.1rem;
             }
-
+            
             .input-container {
                 flex-direction: column;
-                gap: 10px;
+                gap: 15px;
             }
-
-            .download-btn {
-                width: 100%;
+            
+            .url-input, .download-btn {
+                padding: 18px 25px;
+                font-size: 16px;
             }
-
-            .audio-player-card {
-                flex-direction: column;
-                text-align: center;
-                gap: 20px;
-            }
-
-            .audio-info {
-                order: -1;
-            }
-
-            .audio-controls {
-                justify-content: center;
-            }
-
-            .result-stats {
+            
+            .video-grid {
                 grid-template-columns: 1fr;
+                gap: 25px;
             }
-
-            .author-section {
+            
+            .photo-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 15px;
+            }
+            
+            .result-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .audio-player-card {
                 flex-direction: column;
                 text-align: center;
                 gap: 15px;
             }
 
-            .container {
-                padding: 20px 15px;
+            .audio-info {
+                order: 1;
+            }
+
+            .audio-controls {
+                order: 2;
+                justify-content: center;
+            }
+
+            .music-icon {
+                order: 0;
+                align-self: center;
             }
         }
 
         @media (max-width: 480px) {
-            .title {
-                font-size: 1.8rem;
+            .container {
+                padding: 20px 15px 15px;
             }
-
+            
+            .title {
+                font-size: 2rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
             .photo-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .result-stats {
                 grid-template-columns: 1fr;
             }
 
-            .audio-player-card {
+            .fullscreen-btn {
+                top: 15px;
+                right: 15px;
+                width: 45px;
+                height: 45px;
+            }
+            
+            .result-info, .audio-section, .api-docs {
                 padding: 20px;
             }
 
-            .result-info, .audio-section {
-                padding: 20px;
+            .audio-player-card {
+                padding: 15px;
             }
         }
 
-        @media (min-width: 1200px) {
+        @media (min-width: 1024px) {
+            .container {
+                max-width: 1400px;
+                padding: 50px 30px 30px;
+            }
+            
+            .input-section {
+                max-width: 800px;
+            }
+            
+            .results {
+                max-width: 1300px;
+            }
+            
+            .video-grid {
+                grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            }
+
             .photo-grid {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: 1fr 1fr;
             }
         }
 
@@ -941,88 +898,77 @@ const HTML_TEMPLATE = `
 
         urlInput.addEventListener('input', function() {
             if (this.value.trim()) {
-                downloadBtn.disabled = false;
+                downloadBtn.classList.add('active');
             } else {
-                downloadBtn.disabled = true;
+                downloadBtn.classList.remove('active');
             }
         });
 
         // Enter key support
         urlInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter' && !downloadBtn.disabled) {
+            if (e.key === 'Enter' && this.value.trim()) {
                 downloadTikTok();
             }
         });
 
-        function toggleAudio(audioUrl, button) {
+        function toggleAudio(audioUrl, playBtn) {
             if (currentAudio && currentAudioUrl === audioUrl) {
                 if (isPlaying) {
                     currentAudio.pause();
-                    button.innerHTML = '▶';
+                    playBtn.innerHTML = '▶️';
                     isPlaying = false;
                 } else {
                     currentAudio.play();
-                    button.innerHTML = '⏸';
+                    playBtn.innerHTML = '⏸️';
                     isPlaying = true;
                 }
             } else {
                 if (currentAudio) {
                     currentAudio.pause();
                     // Reset previous button
-                    const prevButtons = document.querySelectorAll('.play-btn');
-                    prevButtons.forEach(btn => btn.innerHTML = '▶');
+                    const prevBtn = document.querySelector('.play-btn[data-playing="true"]');
+                    if (prevBtn) {
+                        prevBtn.innerHTML = '▶️';
+                        prevBtn.setAttribute('data-playing', 'false');
+                    }
                 }
                 
                 currentAudio = new Audio(audioUrl);
                 currentAudioUrl = audioUrl;
                 
-                currentAudio.addEventListener('ended', function() {
-                    button.innerHTML = '▶';
+                currentAudio.addEventListener('ended', () => {
+                    playBtn.innerHTML = '▶️';
+                    playBtn.setAttribute('data-playing', 'false');
                     isPlaying = false;
                 });
                 
-                currentAudio.addEventListener('error', function() {
-                    button.innerHTML = '▶';
+                currentAudio.addEventListener('error', () => {
+                    alert('Error playing audio. Please try downloading instead.');
+                    playBtn.innerHTML = '▶️';
+                    playBtn.setAttribute('data-playing', 'false');
                     isPlaying = false;
-                    alert('Error playing audio');
                 });
                 
                 currentAudio.play();
-                button.innerHTML = '⏸';
+                playBtn.innerHTML = '⏸️';
+                playBtn.setAttribute('data-playing', 'true');
                 isPlaying = true;
             }
         }
 
-        function downloadFile(url, filename) {
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename || 'download';
-            a.target = '_blank';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-        }
-
-        function formatNumber(num) {
-            if (num >= 1000000) {
-                return (num / 1000000).toFixed(1) + "M";
-            } else if (num >= 1000) {
-                return (num / 1000).toFixed(1) + "K";
-            }
-            return num.toString();
-        }
-
         async function downloadTikTok() {
             const url = urlInput.value.trim();
-            if (!url) {
-                alert('Please enter a TikTok URL');
-                return;
-            }
+            if (!url) return;
 
-            // Show loading
-            document.getElementById('loading').style.display = 'block';
-            document.getElementById('results').style.display = 'none';
-            downloadBtn.disabled = true;
+            // Hide keyboard on mobile devices
+            urlInput.blur();
+            document.activeElement.blur();
+
+            const loading = document.getElementById('loading');
+            const results = document.getElementById('results');
+            
+            loading.style.display = 'block';
+            results.style.display = 'none';
 
             try {
                 const response = await fetch('/api', {
@@ -1034,141 +980,183 @@ const HTML_TEMPLATE = `
                 });
 
                 const data = await response.json();
-
+                
                 if (data.status) {
                     displayResults(data);
                 } else {
-                    alert('Error: ' + data.message);
+                    throw new Error(data.message || 'Failed to download');
                 }
             } catch (error) {
-                alert('Network error: ' + error.message);
+                alert('Error: ' + error.message);
             } finally {
-                // Hide loading
-                document.getElementById('loading').style.display = 'none';
-                downloadBtn.disabled = false;
+                loading.style.display = 'none';
             }
         }
 
+        function downloadFile(url, filename) {
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.blob();
+                })
+                .then(blob => {
+                    const link = document.createElement('a');
+                    const objectUrl = URL.createObjectURL(blob);
+                    link.href = objectUrl;
+                    link.download = filename;
+                    link.style.display = 'none';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(objectUrl);
+                })
+                .catch(error => {
+                    console.error('Download failed:', error);
+                    // Fallback to direct link
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = filename;
+                    link.target = '_blank';
+                    link.rel = 'noopener noreferrer';
+                    link.style.display = 'none';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                });
+        }
+
         function displayResults(data) {
-            const resultsDiv = document.getElementById('results');
-            let html = '';
-
-            // Post info with enhanced styling
-            html += '<div class="result-info">';
-            html += '<div class="post-title">' + (data.title || 'TikTok Video') + '</div>';
-            html += '<div class="post-meta">' + (data.taken_at || 'Recently posted') + ' • ' + (data.duration || '0') + ' Seconds</div>';
-            html += '</div>';
-
-            // Only show author section if avatar exists
-            if (data.author && data.author.avatar) {
-                html += '<div class="author-section">';
-                html += '<img src="' + data.author.avatar + '" alt="Author" class="author-avatar">';
-                html += '<div class="author-info">';
-                html += '<div class="author-name">' + (data.author.nickname || data.author.fullname || 'Unknown Author') + '</div>';
-                html += '<div class="author-username">@' + (data.author.fullname || 'unknown') + '</div>';
-                html += '</div>';
-                html += '</div>';
-            }
+            const results = document.getElementById('results');
             
-            html += '<div class="result-stats">';
-            html += '<div class="stat-item">';
-            html += '<div class="stat-icon views">👁</div>';
-            html += '<div class="stat-content">';
-            html += '<div class="stat-label">Views</div>';
-            html += '<div class="stat-value">' + formatNumber(data.stats.views || 0) + '</div>';
-            html += '</div>';
-            html += '</div>';
-            html += '<div class="stat-item">';
-            html += '<div class="stat-icon likes">❤</div>';
-            html += '<div class="stat-content">';
-            html += '<div class="stat-label">Likes</div>';
-            html += '<div class="stat-value">' + formatNumber(data.stats.likes || 0) + '</div>';
-            html += '</div>';
-            html += '</div>';
-            html += '<div class="stat-item">';
-            html += '<div class="stat-icon comments">💬</div>';
-            html += '<div class="stat-content">';
-            html += '<div class="stat-label">Comments</div>';
-            html += '<div class="stat-value">' + formatNumber(data.stats.comment || 0) + '</div>';
-            html += '</div>';
-            html += '</div>';
-            html += '<div class="stat-item">';
-            html += '<div class="stat-icon shares">📤</div>';
-            html += '<div class="stat-content">';
-            html += '<div class="stat-label">Shares</div>';
-            html += '<div class="stat-value">' + formatNumber(data.stats.share || 0) + '</div>';
-            html += '</div>';
-            html += '</div>';
-            html += '</div>';
+            let html = \`
+                <div class="result-info">
+                    <div class="post-title">\${data.title}</div>
+                    <div class="post-meta">\${data.taken_at} • \${data.duration || '0 Seconds'}</div>
+                    
+                    <div class="author-section">
+                        <img src="\${data.author.avatar || '/diverse-user-avatars.png'}" alt="Author Avatar" class="author-avatar">
+                        <div class="author-info">
+                            <div class="author-name">\${data.author.nickname || 'Unknown'} 🥑</div>
+                            <div class="author-username">@\${data.author.fullname || 'unknown'}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="result-stats">
+                        <div class="stat-item">
+                            <div class="stat-icon views">👁️</div>
+                            <div class="stat-content">
+                                <div class="stat-label">Views</div>
+                                <div class="stat-value">\${data.stats.views}</div>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon likes">❤️</div>
+                            <div class="stat-content">
+                                <div class="stat-label">Likes</div>
+                                <div class="stat-value">\${data.stats.likes}</div>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon comments">💬</div>
+                            <div class="stat-content">
+                                <div class="stat-label">Comments</div>
+                                <div class="stat-value">\${data.stats.comment}</div>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon shares">↗️</div>
+                            <div class="stat-content">
+                                <div class="stat-label">Shares</div>
+                                <div class="stat-value">\${data.stats.share}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            \`;
 
-            // Audio section with enhanced player
             if (data.music_info && data.music_info.url) {
-                html += '<div class="audio-section">';
-                html += '<div class="audio-player-card">';
-                html += '<div class="music-icon">🎵</div>';
-                html += '<div class="audio-info">';
-                html += '<div class="audio-title-text">' + (data.music_info.title || "Audio Track") + '</div>';
-                html += '<div class="audio-author-text">' + (data.music_info.author || "Unknown Artist") + '</div>';
-                html += '</div>';
-                html += '<div class="audio-controls">';
-                html += '<button class="play-btn" onclick="toggleAudio(\'' + data.music_info.url + '\', this)">▶</button>';
-                html += '<button class="download-audio-btn" onclick="downloadFile(\'' + data.music_info.url + '\', \'audio.mp3\')">⬇</button>';
-                html += '</div>';
-                html += '</div>';
-                html += '</div>';
+                const audioTitle = data.music_info.title || 'TikTok Audio';
+                const audioAuthor = data.music_info.author || 'Unknown Artist';
+                const audioFilename = \`tiktok-audio-\${audioTitle.replace(/[^a-zA-Z0-9]/g, '_')}.mp3\`;
+                
+                html += \`
+                    <div class="audio-section">
+                        <div class="audio-player-card">
+                            <div class="music-icon">🎵</div>
+                            <div class="audio-info">
+                                <div class="audio-title-text">\${audioTitle}</div>
+                                <div class="audio-author-text">\${audioAuthor}</div>
+                            </div>
+                            <div class="audio-controls">
+                                <button class="play-btn" onclick="toggleAudio('\${data.music_info.url}', this)" data-playing="false">
+                                    ▶️
+                                </button>
+                                <button class="download-audio-btn" onclick="downloadFile('\${data.music_info.url}', '\${audioFilename}')">
+                                    ⬇️
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                \`;
             }
 
-            // Photos section
-            if (data.data && data.data.some(item => item.type === "photo")) {
-                html += '<div class="photo-section">';
-                html += '<div class="photo-header">';
-                html += '<div class="photo-icon">📷</div>';
-                html += '<div class="photo-title">Photos (' + data.data.filter(item => item.type === "photo").length + ')</div>';
-                html += '</div>';
-                html += '<div class="photo-grid">';
-
+            // Check if it's photos or videos
+            const hasPhotos = data.data.some(item => item.type === 'photo');
+            
+            if (hasPhotos) {
+                const photoCount = data.data.filter(item => item.type === 'photo').length;
+                html += \`
+                    <div class="photo-section">
+                        <div class="photo-header">
+                            <span class="icon">👁️</span>
+                            <span>Photos (\${photoCount})</span>
+                        </div>
+                        <div class="photo-grid">
+                \`;
                 data.data.forEach((item, index) => {
-                    if (item.type === "photo") {
-                        html += '<div class="photo-item">';
-                        html += '<img src="' + item.url + '" alt="Photo ' + (index + 1) + '" loading="lazy">';
-                        html += '<button class="photo-download" onclick="downloadFile(\'' + item.url + '\', \'photo_' + (index + 1) + '.jpg\')">⬇</button>';
-                        html += '</div>';
+                    if (item.type === 'photo') {
+                        const photoFilename = \`tiktok-photo-\${index + 1}.jpg\`;
+                        html += \`
+                            <div class="photo-item">
+                                <img src="\${item.url}" alt="TikTok Photo \${index + 1}" loading="lazy">
+                                <button class="download-media-btn" onclick="downloadFile('\${item.url}', '\${photoFilename}')">Download Photo</button>
+                            </div>
+                        \`;
                     }
                 });
-
-                html += '</div>';
-                html += '</div>';
-            }
-
-            // Videos section
-            if (data.data && data.data.some(item => item.type !== "photo")) {
-                html += '<div class="video-section">';
-                html += '<div class="video-header">';
-                html += '<div class="video-icon">🎬</div>';
-                html += '<div class="video-title">Videos</div>';
-                html += '</div>';
+                html += '</div></div>';
+            } else {
                 html += '<div class="video-grid">';
-
                 data.data.forEach((item, index) => {
-                    if (item.type !== "photo") {
-                        html += '<div class="video-item">';
-                        html += '<div class="video-info">';
-                        html += '<div class="video-quality">' + item.type.replace("_", " ").toUpperCase() + ' Quality</div>';
-                        html += '<div class="video-size">' + (data.size_nowm_hd || "Unknown size") + '</div>';
-                        html += '</div>';
-                        html += '<button class="video-download" onclick="downloadFile(\'' + item.url + '\', \'video_' + item.type.replace("_", " ").toUpperCase() + '.mp4\')">';
-                        html += 'Download ' + item.type.replace("_", " ").toUpperCase();
-                        html += '</button>';
-                        html += '</div>';
+                    let qualityLabel = '';
+                    let filename = '';
+                    if (item.type === 'watermark') {
+                        qualityLabel = 'With Watermark';
+                        filename = 'tiktok-video-watermark.mp4';
+                    } else if (item.type === 'nowatermark') {
+                        qualityLabel = 'No Watermark';
+                        filename = 'tiktok-video-no-watermark.mp4';
+                    } else if (item.type === 'nowatermark_hd') {
+                        qualityLabel = 'HD No Watermark';
+                        filename = 'tiktok-video-hd.mp4';
                     }
-                });
 
-                html += '</div>';
+                    html += \`
+                        <div class="video-item">
+                            <div class="video-quality-label">\${qualityLabel}</div>
+                            <video controls preload="metadata" poster="\${data.cover}" onplay="this.removeAttribute('poster')" controlsList="nodownload">
+                                <source src="\${item.url}" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                            <button class="download-media-btn" onclick="downloadFile('\${item.url}', '\${filename}')">Download Video</button>
+                        </div>
+                    \`;
+                });
                 html += '</div>';
             }
 
-            resultsDiv.innerHTML = html;
-            resultsDiv.style.display = "block";
+            results.innerHTML = html;
+            results.style.display = 'block';
         }
     </script>
 </body>
