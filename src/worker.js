@@ -177,7 +177,7 @@ const HTML_TEMPLATE = `
             fill: #ff0040;
         }
 
-        /* Main container - improved sizing for all devices */
+        /* Main container */
         .container {
             min-height: 100vh;
             display: flex;
@@ -309,91 +309,195 @@ const HTML_TEMPLATE = `
             display: none;
         }
 
+        /* Updated result info to match TikTok author design */
         .result-info {
-            background: rgba(20, 20, 20, 0.8);
-            border: 2px solid rgba(0, 234, 255, 0.3);
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 40px;
-            backdrop-filter: blur(10px);
+            background: rgba(20, 20, 20, 0.9);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(15px);
         }
 
-        .result-title {
-            font-size: 1.6rem;
+        .post-title {
+            font-size: 1.4rem;
             font-weight: bold;
-            color: #00eaff;
-            margin-bottom: 20px;
+            color: #ffffff;
+            margin-bottom: 15px;
             line-height: 1.4;
         }
 
+        .post-meta {
+            color: #888888;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .author-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .author-info {
+            flex: 1;
+        }
+
+        .author-name {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 3px;
+        }
+
+        .author-username {
+            font-size: 0.9rem;
+            color: #888888;
+        }
+
+        /* Updated stats to 2x2 grid with icons like TikTok design */
         .result-stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 20px;
-            margin-bottom: 25px;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
         }
 
         .stat-item {
-            text-align: center;
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
-        }
-
-        .stat-value {
-            font-size: 1.4rem;
-            font-weight: bold;
-            color: #ff0040;
-        }
-
-        .stat-label {
-            font-size: 1rem;
-            color: #cccccc;
-            margin-top: 8px;
-        }
-
-        /* Custom audio player with play/stop button */
-        .audio-section {
-            background: rgba(20, 20, 20, 0.8);
-            border: 2px solid rgba(255, 0, 64, 0.3);
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 40px;
-            backdrop-filter: blur(10px);
-        }
-
-        .audio-title {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #ff0040;
-            margin-bottom: 20px;
             display: flex;
             align-items: center;
             gap: 12px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+        }
+
+        .stat-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .stat-icon.views { color: #00aaff; }
+        .stat-icon.likes { color: #ff3040; }
+        .stat-icon.comments { color: #00ff88; }
+        .stat-icon.shares { color: #aa44ff; }
+
+        .stat-content {
+            flex: 1;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #888888;
+            margin-bottom: 2px;
+        }
+
+        .stat-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        /* Updated audio player to match reference design */
+        .audio-section {
+            background: rgba(20, 20, 20, 0.9);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(15px);
+        }
+
+        .audio-player-card {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .music-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, #ff0040, #ff4070);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .audio-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .audio-title-text {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .audio-author-text {
+            font-size: 1rem;
+            color: #888888;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .audio-controls {
             display: flex;
-            align-items: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .custom-audio-player {
-            display: flex;
-            align-items: center;
             gap: 15px;
-            flex: 1;
-            min-width: 300px;
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 10px;
-            padding: 15px;
+            flex-shrink: 0;
         }
 
-        .play-stop-btn {
+        .play-btn {
             width: 50px;
             height: 50px;
-            border-radius: 50%;
+            border-radius: 12px;
+            border: none;
+            background: rgba(100, 50, 80, 0.8);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 18px;
+        }
+
+        .play-btn:hover {
+            background: rgba(120, 60, 90, 1);
+            transform: scale(1.05);
+        }
+
+        .download-audio-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
             border: none;
             background: linear-gradient(45deg, #ff0040, #ff4070);
             color: white;
@@ -405,47 +509,42 @@ const HTML_TEMPLATE = `
             font-size: 18px;
         }
 
-        .play-stop-btn:hover {
+        .download-audio-btn:hover {
             background: linear-gradient(45deg, #ff4070, #ff0040);
-            box-shadow: 0 0 15px rgba(255, 0, 64, 0.5);
             transform: scale(1.05);
         }
 
-        .audio-info {
-            flex: 1;
-            color: #cccccc;
+        /* Fixed photo grid to exactly 2 columns as requested */
+        .photo-section {
+            margin-bottom: 40px;
         }
 
-        .audio-title-text {
+        .photo-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
             font-weight: bold;
             color: #ffffff;
-            margin-bottom: 5px;
         }
 
-        .audio-author-text {
-            font-size: 0.9rem;
-            opacity: 0.8;
+        .photo-header .icon {
+            color: #00ff88;
+            font-size: 20px;
         }
 
-        .audio-time {
-            font-size: 0.9rem;
-            color: #ff0040;
-            font-weight: bold;
-        }
-
-        /* Fixed photo grid for exact 2-column layout */
         .photo-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 25px;
-            margin-bottom: 40px;
+            gap: 20px;
         }
 
         .photo-item {
             background: rgba(20, 20, 20, 0.8);
-            border: 2px solid rgba(0, 234, 255, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.1);
             border-radius: 15px;
-            padding: 20px;
+            padding: 15px;
             text-align: center;
             backdrop-filter: blur(10px);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -458,16 +557,15 @@ const HTML_TEMPLATE = `
 
         .photo-item img {
             width: 100%;
-            max-width: 100%;
             height: auto;
             border-radius: 12px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             object-fit: cover;
             aspect-ratio: 9/16;
-            max-height: 400px;
+            max-height: 300px;
         }
 
-        /* Improved video grid layout for better desktop sizing */
+        /* Video grid */
         .video-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -507,7 +605,7 @@ const HTML_TEMPLATE = `
             font-size: 1.2rem;
         }
 
-        /* Enhanced download buttons */
+        /* Download buttons */
         .download-media-btn {
             padding: 15px 30px;
             background: linear-gradient(45deg, #00eaff, #0099cc);
@@ -527,27 +625,6 @@ const HTML_TEMPLATE = `
         .download-media-btn:hover {
             background: linear-gradient(45deg, #0099cc, #00eaff);
             box-shadow: 0 0 25px rgba(0, 234, 255, 0.4);
-            transform: translateY(-2px);
-        }
-
-        .download-audio-btn {
-            padding: 15px 30px;
-            background: linear-gradient(45deg, #ff0040, #ff4070);
-            border: none;
-            border-radius: 12px;
-            color: #ffffff;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-            min-width: 180px;
-        }
-
-        .download-audio-btn:hover {
-            background: linear-gradient(45deg, #ff4070, #ff0040);
-            box-shadow: 0 0 25px rgba(255, 0, 64, 0.4);
             transform: translateY(-2px);
         }
 
@@ -607,35 +684,7 @@ const HTML_TEMPLATE = `
             color: #00eaff;
         }
 
-        /* Enhanced responsive design for better device compatibility */
-        @media (min-width: 1400px) {
-            .container {
-                padding: 60px 40px 40px;
-            }
-            
-            .title {
-                font-size: 4rem;
-            }
-            
-            .photo-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-            
-            .video-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-
-        @media (max-width: 1200px) {
-            .video-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .container {
-                padding: 30px 20px 20px;
-            }
-        }
-
+        /* Enhanced responsive design for all devices */
         @media (max-width: 768px) {
             .title {
                 font-size: 2.5rem;
@@ -662,25 +711,31 @@ const HTML_TEMPLATE = `
             
             .photo-grid {
                 grid-template-columns: 1fr 1fr;
-                gap: 20px;
+                gap: 15px;
             }
             
             .result-stats {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: 1fr 1fr;
             }
             
-            .audio-controls {
+            .audio-player-card {
                 flex-direction: column;
-                align-items: stretch;
+                text-align: center;
                 gap: 15px;
             }
 
-            .custom-audio-player {
-                min-width: 100%;
+            .audio-info {
+                order: 1;
             }
-            
-            .download-audio-btn {
-                min-width: 100%;
+
+            .audio-controls {
+                order: 2;
+                justify-content: center;
+            }
+
+            .music-icon {
+                order: 0;
+                align-self: center;
             }
         }
 
@@ -716,34 +771,12 @@ const HTML_TEMPLATE = `
             .result-info, .audio-section, .api-docs {
                 padding: 20px;
             }
-        }
 
-        /* Additional responsive breakpoints for tablets and landscape modes */
-        @media (min-width: 768px) and (max-width: 1024px) {
-            .photo-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-            
-            .video-grid {
-                grid-template-columns: repeat(2, 1fr);
+            .audio-player-card {
+                padding: 15px;
             }
         }
 
-        @media (orientation: landscape) and (max-height: 600px) {
-            .title {
-                font-size: 1.8rem;
-            }
-            
-            .header {
-                margin-bottom: 25px;
-            }
-            
-            .container {
-                padding: 15px 20px;
-            }
-        }
-
-        /* Desktop mode improvements for better sizing */
         @media (min-width: 1024px) {
             .container {
                 max-width: 1400px;
@@ -760,6 +793,16 @@ const HTML_TEMPLATE = `
             
             .video-grid {
                 grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            }
+
+            .photo-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (min-width: 1400px) {
+            .photo-grid {
+                grid-template-columns: repeat(3, 1fr);
             }
         }
     </style>
@@ -883,7 +926,7 @@ const HTML_TEMPLATE = `
                 if (currentAudio) {
                     currentAudio.pause();
                     // Reset previous button
-                    const prevBtn = document.querySelector('.play-stop-btn[data-playing="true"]');
+                    const prevBtn = document.querySelector('.play-btn[data-playing="true"]');
                     if (prevBtn) {
                         prevBtn.innerHTML = '▶️';
                         prevBtn.setAttribute('data-playing', 'false');
@@ -911,12 +954,6 @@ const HTML_TEMPLATE = `
                 playBtn.setAttribute('data-playing', 'true');
                 isPlaying = true;
             }
-        }
-
-        function formatTime(seconds) {
-            const mins = Math.floor(seconds / 60);
-            const secs = Math.floor(seconds % 60);
-            return \`\${mins}:\${secs.toString().padStart(2, '0')}\`;
         }
 
         async function downloadTikTok() {
@@ -993,29 +1030,47 @@ const HTML_TEMPLATE = `
             
             let html = \`
                 <div class="result-info">
-                    <div class="result-title">\${data.title}</div>
-                    <div class="result-stats">
-                        <div class="stat-item">
-                            <div class="stat-value">\${data.stats.views}</div>
-                            <div class="stat-label">Views</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-value">\${data.stats.likes}</div>
-                            <div class="stat-label">Likes</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-value">\${data.stats.comment}</div>
-                            <div class="stat-label">Comments</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-value">\${data.stats.share}</div>
-                            <div class="stat-label">Shares</div>
+                    <div class="post-title">\${data.title}</div>
+                    <div class="post-meta">\${data.taken_at} • \${data.duration || '0 Seconds'}</div>
+                    
+                    <div class="author-section">
+                        <img src="\${data.author.avatar || '/diverse-user-avatars.png'}" alt="Author Avatar" class="author-avatar">
+                        <div class="author-info">
+                            <div class="author-name">\${data.author.nickname || 'Unknown'} 🥑</div>
+                            <div class="author-username">@\${data.author.fullname || 'unknown'}</div>
                         </div>
                     </div>
-                    <p><strong>Author:</strong> \${data.author.nickname} (@\${data.author.fullname})</p>
-                    <p><strong>Duration:</strong> \${data.duration || 'N/A'}</p>
-                    <p><strong>Date:</strong> \${data.taken_at}</p>
-                    <p><strong>Developer:</strong> \${data.developer}</p>
+                    
+                    <div class="result-stats">
+                        <div class="stat-item">
+                            <div class="stat-icon views">👁️</div>
+                            <div class="stat-content">
+                                <div class="stat-label">Views</div>
+                                <div class="stat-value">\${data.stats.views}</div>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon likes">❤️</div>
+                            <div class="stat-content">
+                                <div class="stat-label">Likes</div>
+                                <div class="stat-value">\${data.stats.likes}</div>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon comments">💬</div>
+                            <div class="stat-content">
+                                <div class="stat-label">Comments</div>
+                                <div class="stat-value">\${data.stats.comment}</div>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon shares">↗️</div>
+                            <div class="stat-content">
+                                <div class="stat-label">Shares</div>
+                                <div class="stat-value">\${data.stats.share}</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             \`;
 
@@ -1026,21 +1081,20 @@ const HTML_TEMPLATE = `
                 
                 html += \`
                     <div class="audio-section">
-                        <div class="audio-title">
-                            🎵 Audio: \${audioTitle} - \${audioAuthor}
-                        </div>
-                        <div class="audio-controls">
-                            <div class="custom-audio-player">
-                                <button class="play-stop-btn" onclick="toggleAudio('\${data.music_info.url}', this)" data-playing="false">
+                        <div class="audio-player-card">
+                            <div class="music-icon">🎵</div>
+                            <div class="audio-info">
+                                <div class="audio-title-text">\${audioTitle}</div>
+                                <div class="audio-author-text">\${audioAuthor}</div>
+                            </div>
+                            <div class="audio-controls">
+                                <button class="play-btn" onclick="toggleAudio('\${data.music_info.url}', this)" data-playing="false">
                                     ▶️
                                 </button>
-                                <div class="audio-info">
-                                    <div class="audio-title-text">\${audioTitle}</div>
-                                    <div class="audio-author-text">by \${audioAuthor}</div>
-                                    <div class="audio-time">Click play to listen</div>
-                                </div>
+                                <button class="download-audio-btn" onclick="downloadFile('\${data.music_info.url}', '\${audioFilename}')">
+                                    ⬇️
+                                </button>
                             </div>
-                            <button class="download-audio-btn" onclick="downloadFile('\${data.music_info.url}', '\${audioFilename}')">Download Audio</button>
                         </div>
                     </div>
                 \`;
@@ -1050,7 +1104,15 @@ const HTML_TEMPLATE = `
             const hasPhotos = data.data.some(item => item.type === 'photo');
             
             if (hasPhotos) {
-                html += '<div class="photo-grid">';
+                const photoCount = data.data.filter(item => item.type === 'photo').length;
+                html += \`
+                    <div class="photo-section">
+                        <div class="photo-header">
+                            <span class="icon">👁️</span>
+                            <span>Photos (\${photoCount})</span>
+                        </div>
+                        <div class="photo-grid">
+                \`;
                 data.data.forEach((item, index) => {
                     if (item.type === 'photo') {
                         const photoFilename = \`tiktok-photo-\${index + 1}.jpg\`;
@@ -1062,7 +1124,7 @@ const HTML_TEMPLATE = `
                         \`;
                     }
                 });
-                html += '</div>';
+                html += '</div></div>';
             } else {
                 html += '<div class="video-grid">';
                 data.data.forEach((item, index) => {
