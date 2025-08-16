@@ -73,11 +73,11 @@ async function tiktokDl(url) {
       size_nowm_hd: res.hd_size,
       data: mediaData,
       music_info: {
-        id: res.music_info?.id,
-        title: res.music_info?.title,
-        author: res.music_info?.author,
-        album: res.music_info?.album || null,
-        url: res.music || res.music_info?.play,
+        id: res.music_info ? res.music_info.id : null,
+        title: res.music_info ? res.music_info.title : null,
+        author: res.music_info ? res.music_info.author : null,
+        album: res.music_info ? res.music_info.album : null,
+        url: res.music || (res.music_info ? res.music_info.play : null),
       },
       stats: {
         views: formatNumber(res.play_count || 0),
@@ -87,10 +87,10 @@ async function tiktokDl(url) {
         download: formatNumber(res.download_count || 0),
       },
       author: {
-        id: res.author?.id,
-        fullname: res.author?.unique_id,
-        nickname: res.author?.nickname,
-        avatar: res.author?.avatar,
+        id: res.author ? res.author.id : null,
+        fullname: res.author ? res.author.unique_id : null,
+        nickname: res.author ? res.author.nickname : null,
+        avatar: res.author ? res.author.avatar : null,
       },
     }
   } catch (error) {
@@ -99,8 +99,7 @@ async function tiktokDl(url) {
 }
 
 // HTML template for the web interface
-const HTML_TEMPLATE =
-  `
+const HTML_TEMPLATE = `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -884,7 +883,7 @@ const HTML_TEMPLATE =
 
         <div class="api-docs">
             <h3 class="api-title">🔧 API Usage</h3>
-            <p style="margin-bottom: 15px; color: #cccccc;">You can also use this service as an API by adding parameters to the URL:</ 15px; color: #cccccc can also use this service as an API by adding parameters to the URL:
+            <p style="margin-bottom: 15px; color: #cccccc;">You can also use this service as an API by adding parameters to the URL:</p>
             
             <div class="api-example">
                 <strong>GET Request:</strong><br>
@@ -1004,6 +1003,15 @@ const HTML_TEMPLATE =
             document.body.removeChild(a);
         }
 
+        function formatNumber(num) {
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(1) + "M";
+            } else if (num >= 1000) {
+                return (num / 1000).toFixed(1) + "K";
+            }
+            return num.toString();
+        }
+
         async function downloadTikTok() {
             const url = urlInput.value.trim();
             if (!url) {
@@ -1046,146 +1054,123 @@ const HTML_TEMPLATE =
             let html = '';
 
             // Post info with enhanced styling
-            html += ` < div
-class=\"result-info">
-                    <div class=\"post-title\">${data.title || 'TikTok Video'}</div>
-                    <div class=\"post-meta\">${data.created_at || 'Recently posted'} • ${data.duration || '0'} Seconds</div>
-                    
-                    <div class=\"author-section\">
-                        <img src=\"${data.author?.avatar || '/diverse-user-avatars.png'}" alt="Author\" class="author-avatar\" onerror="this.src=\'/diverse-user-avatars.png'">\
-                        <div class="author-info">\
-                            <div class="author-name\">${data.author?.nickname || data.author?.unique_id || 'Unknown Author'}</div>
-                            <div class=\"author-username\">@${data.author?.unique_id || 'unknown'}</div>
-                        </div>\
-                    </div>\
-                    
-                    <div class=\"result-stats\">\
-                        <div class="stat-item">\
-                            <div class=\"stat-icon views\">👁</div>
-                            <div class=\"stat-content">\
-                                <div class=\"stat-label\">Views</div>
-                                <div class=\"stat-value\">${formatNumber(data.statistics?.play_count || 0)}</div>
-                            </div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-icon likes">❤</div>
-                            <div class="stat-content">
-                                <div class="stat-label">Likes</div>
-                                <div class="stat-value">${formatNumber(data.statistics?.digg_count || 0)}
-</div>
-</div>
-                        </div>
-                        <div
-class="stat-item">
-                            <div class="stat-icon comments">💬</div>
-                            <div class="stat-content">
-                                <div class="stat-label">Comments</div>
-                                <div class="stat-value">${formatNumber(data.statistics?.comment_count || 0)}
-</div>
-</div>
-                        </div>
-                        <div
-class="stat-item">
-                            <div class="stat-icon shares">📤</div>
-                            <div class="stat-content">
-                                <div class="stat-label">Shares</div>
-                                <div class="stat-value">${formatNumber(data.statistics?.share_count || 0)}
-</div>
-</div>
-                        </div>
-                    </div>
-                </div>
-            `
+            html += '<div class="result-info">';
+            html += '<div class="post-title">' + (data.title || 'TikTok Video') + '</div>';
+            html += '<div class="post-meta">' + (data.taken_at || 'Recently posted') + ' • ' + (data.duration || '0') + ' Seconds</div>';
+            html += '</div>';
 
-// Audio section with enhanced player
-if (data.music && data.music.play_url) {
-  html += `
-                    <div class="audio-section">
-                        <div class="audio-player-card">
-                            <div class="music-icon">🎵</div>
-                            <div class="audio-info">
-                                <div class="audio-title-text">${data.music.title || "Audio Track"}</div>
-                                <div class="audio-author-text">${data.music.author || "Unknown Artist"}</div>
-                            </div>
-                            <div class="audio-controls">
-                                <button class="play-btn" onclick="toggleAudio('${data.music.play_url}', this)">▶</button>
-                                <button class="download-audio-btn" onclick="downloadFile('${data.music.play_url}', 'audio.mp3')">⬇</button>
-                            </div>
-                        </div>
-                    </div>
-                `
-}
+            // Only show author section if avatar exists
+            if (data.author && data.author.avatar) {
+                html += '<div class="author-section">';
+                html += '<img src="' + data.author.avatar + '" alt="Author" class="author-avatar">';
+                html += '<div class="author-info">';
+                html += '<div class="author-name">' + (data.author.nickname || data.author.fullname || 'Unknown Author') + '</div>';
+                html += '<div class="author-username">@' + (data.author.fullname || 'unknown') + '</div>';
+                html += '</div>';
+                html += '</div>';
+            }
+            
+            html += '<div class="result-stats">';
+            html += '<div class="stat-item">';
+            html += '<div class="stat-icon views">👁</div>';
+            html += '<div class="stat-content">';
+            html += '<div class="stat-label">Views</div>';
+            html += '<div class="stat-value">' + formatNumber(data.stats.views || 0) + '</div>';
+            html += '</div>';
+            html += '</div>';
+            html += '<div class="stat-item">';
+            html += '<div class="stat-icon likes">❤</div>';
+            html += '<div class="stat-content">';
+            html += '<div class="stat-label">Likes</div>';
+            html += '<div class="stat-value">' + formatNumber(data.stats.likes || 0) + '</div>';
+            html += '</div>';
+            html += '</div>';
+            html += '<div class="stat-item">';
+            html += '<div class="stat-icon comments">💬</div>';
+            html += '<div class="stat-content">';
+            html += '<div class="stat-label">Comments</div>';
+            html += '<div class="stat-value">' + formatNumber(data.stats.comment || 0) + '</div>';
+            html += '</div>';
+            html += '</div>';
+            html += '<div class="stat-item">';
+            html += '<div class="stat-icon shares">📤</div>';
+            html += '<div class="stat-content">';
+            html += '<div class="stat-label">Shares</div>';
+            html += '<div class="stat-value">' + formatNumber(data.stats.share || 0) + '</div>';
+            html += '</div>';
+            html += '</div>';
+            html += '</div>';
 
-// Photos section
-if (data.images && data.images.length > 0) {
-  html += `
-                    <div class="photo-section">
-                        <div class="photo-header">
-                            <div class="photo-icon">📷</div>
-                            <div class="photo-title">Photos (${data.images.length})</div>
-                        </div>
-                        <div class="photo-grid">
-                `
+            // Audio section with enhanced player
+            if (data.music_info && data.music_info.url) {
+                html += '<div class="audio-section">';
+                html += '<div class="audio-player-card">';
+                html += '<div class="music-icon">🎵</div>';
+                html += '<div class="audio-info">';
+                html += '<div class="audio-title-text">' + (data.music_info.title || "Audio Track") + '</div>';
+                html += '<div class="audio-author-text">' + (data.music_info.author || "Unknown Artist") + '</div>';
+                html += '</div>';
+                html += '<div class="audio-controls">';
+                html += '<button class="play-btn" onclick="toggleAudio(\'' + data.music_info.url + '\', this)">▶</button>';
+                html += '<button class="download-audio-btn" onclick="downloadFile(\'' + data.music_info.url + '\', \'audio.mp3\')">⬇</button>';
+                html += '</div>';
+                html += '</div>';
+                html += '</div>';
+            }
 
-  data.images.forEach((img, index) => {
-    html += `
-                        <div class="photo-item">
-                            <img src="${img}" alt="Photo ${index + 1}" loading="lazy">
-                            <button class="photo-download" onclick="downloadFile('${img}', 'photo_${index + 1}.jpg')">⬇</button>
-                        </div>
-                    `
-  })
+            // Photos section
+            if (data.data && data.data.some(item => item.type === "photo")) {
+                html += '<div class="photo-section">';
+                html += '<div class="photo-header">';
+                html += '<div class="photo-icon">📷</div>';
+                html += '<div class="photo-title">Photos (' + data.data.filter(item => item.type === "photo").length + ')</div>';
+                html += '</div>';
+                html += '<div class="photo-grid">';
 
-  html += `
-                        </div>
-                    </div>
-                `
-}
+                data.data.forEach((item, index) => {
+                    if (item.type === "photo") {
+                        html += '<div class="photo-item">';
+                        html += '<img src="' + item.url + '" alt="Photo ' + (index + 1) + '" loading="lazy">';
+                        html += '<button class="photo-download" onclick="downloadFile(\'' + item.url + '\', \'photo_' + (index + 1) + '.jpg\')">⬇</button>';
+                        html += '</div>';
+                    }
+                });
 
-// Videos section
-if (data.video && data.video.length > 0) {
-  html += `
-                    <div class="video-section">
-                        <div class="video-header">
-                            <div class="video-icon">🎬</div>
-                            <div class="video-title">Videos</div>
-                        </div>
-                        <div class="video-grid">
-                `
+                html += '</div>';
+                html += '</div>';
+            }
 
-  data.video.forEach((vid, index) => {
-    html += `
-                        <div class="video-item">
-                            <div class="video-info">
-                                <div class="video-quality">${vid.quality || "HD"} Quality</div>
-                                <div class="video-size">${vid.size || "Unknown size"}</div>
-                            </div>
-                            <button class="video-download" onclick="downloadFile('${vid.url}', 'video_${vid.quality || index}.mp4')">
-                                Download ${vid.quality || "Video"}
-                            </button>
-                        </div>
-                    `
-  })
+            // Videos section
+            if (data.data && data.data.some(item => item.type !== "photo")) {
+                html += '<div class="video-section">';
+                html += '<div class="video-header">';
+                html += '<div class="video-icon">🎬</div>';
+                html += '<div class="video-title">Videos</div>';
+                html += '</div>';
+                html += '<div class="video-grid">';
 
-  html += `
-                        </div>
-                    </div>
-                `
-}
+                data.data.forEach((item, index) => {
+                    if (item.type !== "photo") {
+                        html += '<div class="video-item">';
+                        html += '<div class="video-info">';
+                        html += '<div class="video-quality">' + item.type.replace("_", " ").toUpperCase() + ' Quality</div>';
+                        html += '<div class="video-size">' + (data.size_nowm_hd || "Unknown size") + '</div>';
+                        html += '</div>';
+                        html += '<button class="video-download" onclick="downloadFile(\'' + item.url + '\', \'video_' + item.type.replace("_", " ").toUpperCase() + '.mp4\')">';
+                        html += 'Download ' + item.type.replace("_", " ").toUpperCase();
+                        html += '</button>';
+                        html += '</div>';
+                    }
+                });
 
-resultsDiv.innerHTML = html
-resultsDiv.style.display = "block"
-}
+                html += '</div>';
+                html += '</div>';
+            }
 
-function formatNumber(num) {
-  if (num >= 1000000) {
-    return (num / 1000000).toFixed(1) + "M"
-  } else if (num >= 1000) {
-    return (num / 1000).toFixed(1) + "K"
-  }
-  return num.toString()
-}
-</script>
+            resultsDiv.innerHTML = html;
+            resultsDiv.style.display = "block";
+        }
+    </script>
 </body>
 </html>
 `
